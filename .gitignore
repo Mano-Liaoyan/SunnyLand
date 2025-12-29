@@ -1,41 +1,34 @@
-# Prerequisites
-*.d
+# Xmake cache
+.xmake/
+build/
 
-# Compiled Object files
-*.slo
-*.lo
+# Generated compile database (useful for LSP/IntelliSense)
+compile_commands.json
+
+# --- C++ & Linker Artifacts (If outside build dir) ---
 *.o
 *.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
+*.exe
+*.dll
 *.so
 *.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
 *.a
 *.lib
+*.pdb
+*.dSYM/
 
-# Executables
-*.exe
-*.out
-*.app
+# --- IDE & Editor Generation ---
+# If you generate VS Code configurations via `xmake project -k vscode`
+.vscode/
+.idea/
+.vs/
 
-# debug information files
-*.dwo
+# If you generate Visual Studio solutions via `xmake project -k vs`
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# --- OS Specifics ---
+.DS_Store
+Thumbs.db
