@@ -1,5 +1,9 @@
 #pragma once
 
+#include <memory>
+
+#include "Time.h"
+
 // Forward declarations for SDL structures
 struct SDL_Window;
 struct SDL_Renderer;
@@ -16,6 +20,9 @@ namespace engine::core
         SDL_Window* window_ = nullptr;
         SDL_Renderer* renderer_ = nullptr;
         bool isRunning_ = false;
+
+        // Engine components
+        std::unique_ptr<Time> time_;
 
        public:
         GameApp();

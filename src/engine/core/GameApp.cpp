@@ -1,11 +1,11 @@
-#include "GameApp.h"
-
 #include <SDL3/SDL.h>
 #include <spdlog/spdlog.h>
 
+#include "GameApp.h"
+
 namespace engine::core
 {
-    GameApp::GameApp() = default;
+    GameApp::GameApp() { time_ = std::make_unique<Time>(); };
 
     GameApp::~GameApp()
     {
@@ -24,12 +24,18 @@ namespace engine::core
             return;
         }
 
+        time_->setTargetFPS(165);
+
         while (isRunning_)
         {
-            float deltaTime = 0.01f;
+            time_->update();
+            float deltaTime = time_->getDeltaTime();
+
             handleEvents();
             update(deltaTime);
             render();
+
+            spdlog::info("deltaTime: {} s", deltaTime);
         }
 
         close();
