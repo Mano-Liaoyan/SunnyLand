@@ -6,7 +6,7 @@ add_rules("mode.debug", "mode.release")
 target("SunnyLand")
     set_kind("binary")
     add_files("src/**.cpp")
-    add_includedirs("src")
+    add_headerfiles("src/**.h")
 
     -- Set C++23 standard here
     set_languages("c++23")
