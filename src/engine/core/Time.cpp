@@ -79,7 +79,7 @@ namespace engine::core
         if (currentDeltaTime < targetFrameTime_)
         {
             auto timeToWait = static_cast<Uint64>((targetFrameTime_ - currentDeltaTime) * 1'000'000'000.0);
-            SDL_Delay(timeToWait);
+            SDL_DelayNS(timeToWait);
             deltaTime_ = static_cast<double>(SDL_GetTicksNS() - lastTick_) / 1'000'000'000.0f;
         }
     }
