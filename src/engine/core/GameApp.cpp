@@ -34,8 +34,6 @@ namespace engine::core
             handleEvents();
             update(deltaTime);
             render();
-
-            spdlog::info("deltaTime: {} s", deltaTime);
         }
 
         close();
