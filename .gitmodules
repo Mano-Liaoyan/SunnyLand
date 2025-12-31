@@ -1,6 +1,6 @@
 [submodule "venders/sdl3_mixer"]
-	path = venders/sdl3_mixer
+	path = vendors/sdl3_mixer
 	url = https://github.com/libsdl-org/SDL_mixer.git
 [submodule "venders/sdl3"]
-	path = venders/sdl3
+	path = vendors/sdl3
 	url = https://github.com/libsdl-org/SDL.git
