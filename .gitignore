@@ -1,5 +1,5 @@
-# Xmake cache
-.xmake/
+# CMake cache
+cmake-build/
 build/
 
 # Generated compile database (useful for LSP/IntelliSense)
