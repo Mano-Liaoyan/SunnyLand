@@ -29,11 +29,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # 添加可执行文件
 add_executable(
-  ${TARGET}
-  src/main.cpp
-  src/engine/core/Time.cpp
-  src/engine/core/GameApp.cpp
-  src/engine/resource/ResourceManager.cpp
+        ${TARGET}
+        src/main.cpp
+        src/engine/core/Time.cpp
+        src/engine/core/GameApp.cpp
+        src/engine/resource/ResourceManager.cpp
+        src/engine/resource/TextureManager.cpp
+        src/engine/resource/AudioManager.cpp
+        src/engine/resource/FontManager.cpp
 )
 
 # 链接库
