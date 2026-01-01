@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "../resource/ResourceManager.h"
 #include "Time.h"
 
 // Forward declarations for SDL structures
@@ -16,16 +17,18 @@ namespace engine::core
      */
     class GameApp final
     {
-       private:
+      private:
         SDL_Window* window_ = nullptr;
         SDL_Renderer* renderer_ = nullptr;
         bool isRunning_ = false;
 
         // Engine components
         std::unique_ptr<Time> time_;
+        std::unique_ptr<resource::ResourceManager> resource_manager_;
 
-       public:
+      public:
         GameApp();
+
         ~GameApp();
 
         /***
@@ -36,15 +39,30 @@ namespace engine::core
 
         // Delete copy and move constructors and assignment operators
         GameApp(const GameApp&) = delete;
+
         GameApp& operator=(const GameApp&) = delete;
+
         GameApp(GameApp&&) = delete;
+
         GameApp& operator=(GameApp&&) = delete;
 
-       private:
+      private:
         [[nodiscard]] bool init();
+
         void handleEvents();
+
         void update(float deltaTime);
+
         void render();
+
         void close();
+
+        bool initSDL();
+
+        bool initTime();
+
+        bool initResourceManager();
+
+        void testReourceManager();
     };
 }  // namespace engine::core
