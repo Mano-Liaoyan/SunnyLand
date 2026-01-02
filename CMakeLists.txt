@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.21.0)
 
 project(
-  SunnyLand
-  LANGUAGES C CXX
-  VERSION 0.1.0
+        SunnyLand
+        LANGUAGES C CXX
+        VERSION 0.1.0
 )
 
 # 指定搜索路径（用于find_package在编译期查找库）
@@ -37,18 +37,21 @@ add_executable(
         src/engine/resource/TextureManager.cpp
         src/engine/resource/AudioManager.cpp
         src/engine/resource/FontManager.cpp
+        src/engine/render/Renderer.cpp
+        src/engine/render/Sprite.h
+        src/engine/render/Camera.cpp
 )
 
 # 链接库
 target_link_libraries(
-  ${TARGET}
-  SDL3::SDL3
-  SDL3_image::SDL3_image
-  SDL3_mixer::SDL3_mixer
-  SDL3_ttf::SDL3_ttf
-  glm::glm
-  nlohmann_json::nlohmann_json
-  spdlog::spdlog
+        ${TARGET}
+        SDL3::SDL3
+        SDL3_image::SDL3_image
+        SDL3_mixer::SDL3_mixer
+        SDL3_ttf::SDL3_ttf
+        glm::glm
+        nlohmann_json::nlohmann_json
+        spdlog::spdlog
 )
 
 

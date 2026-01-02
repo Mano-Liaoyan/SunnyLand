@@ -3,6 +3,10 @@
 #include <SDL3/SDL.h>
 #include <spdlog/spdlog.h>
 
+#include "../render/Camera.h"
+#include "../render/Renderer.h"
+#include "../resource/ResourceManager.h"
+
 namespace engine::core
 {
     GameApp::GameApp() {};
@@ -59,7 +63,19 @@ namespace engine::core
             return false;
         }
 
-        testReourceManager();
+        if (!initRenderer())
+        {
+            spdlog::error("Failed to initialize Renderer.");
+            return false;
+        }
+
+        if (!initCamera())
+        {
+            spdlog::error("Failed to initialize Camera Component.");
+            return false;
+        }
+
+        testResourceManager();
 
         isRunning_ = true;
 
@@ -84,23 +100,27 @@ namespace engine::core
         }
     }
 
-    void GameApp::update(float deltaTime) {}
+    void GameApp::update(float deltaTime) { testCamera(); }
 
     void GameApp::render()
     {
-        // You MUST do this every frame for Wayland to stay responsive
-        SDL_SetRenderDrawColor(renderer_, 100, 149, 237, 255);
-        SDL_RenderClear(renderer_);
-        SDL_RenderPresent(renderer_);
+        renderer_->clearScreen();
+
+        testRenderer();
+
+        renderer_->present();
     }
 
     void GameApp::close()
     {
         spdlog::trace("Closing GameApp...");
-        if (renderer_)
+
+        resourceManager_.reset();
+
+        if (sdl_renderer_)
         {
-            SDL_DestroyRenderer(renderer_);
-            renderer_ = nullptr;
+            SDL_DestroyRenderer(sdl_renderer_);
+            sdl_renderer_ = nullptr;
         }
         if (window_)
         {
@@ -127,17 +147,13 @@ namespace engine::core
             return false;
         }
 
-        renderer_ = SDL_CreateRenderer(window_, nullptr);
-        if (nullptr == renderer_)
+        sdl_renderer_ = SDL_CreateRenderer(window_, nullptr);
+        if (nullptr == sdl_renderer_)
         {
             spdlog::error("Renderer could not be created! SDL_Error: {}", SDL_GetError());
             return false;
         }
-
-        SDL_SetRenderDrawColor(renderer_, 100, 149, 237, 255);
-        SDL_RenderClear(renderer_);
-        SDL_RenderPresent(renderer_);
-
+        SDL_SetRenderLogicalPresentation(sdl_renderer_, 640, 360, SDL_LOGICAL_PRESENTATION_LETTERBOX);
         spdlog::trace("SDL initialized successfully.");
         return true;
     }
@@ -162,7 +178,7 @@ namespace engine::core
     {
         try
         {
-            resource_manager_ = std::make_unique<resource::ResourceManager>(renderer_);
+            resourceManager_ = std::make_unique<resource::ResourceManager>(sdl_renderer_);
         }
         catch (const std::exception& e)
         {
@@ -172,15 +188,70 @@ namespace engine::core
 
         return true;
     }
-
-    void GameApp::testReourceManager()
+    bool GameApp::initRenderer()
     {
-        resource_manager_->getTexture("assets/textures/Actors/eagle-attack.png");
-        resource_manager_->getFont("assets/fonts/VonwaonBitmap-16px.ttf", 16);
-        resource_manager_->getSound("assets/audio/button_click.wav");
-
-        resource_manager_->unloadTexture("assets/textures/Actors/eagle-attack.png");
-        resource_manager_->unloadFont("assets/fonts/VonwaonBitmap-16px.ttf", 16);
-        resource_manager_->unloadSound("assets/audio/button_click.wav");
+        try
+        {
+            renderer_ = std::make_unique<engine::render::Renderer>(sdl_renderer_, resourceManager_.get());
+        }
+        catch (const std::exception& e)
+        {
+            spdlog::error("Failed to initialize Renderer: {}", e.what());
+            return false;
+        }
+        spdlog::trace("Renderer initialized successfully.");
+        return true;
     }
+    bool GameApp::initCamera()
+    {
+        try
+        {
+            camera_ = std::make_unique<engine::render::Camera>(glm::vec2(640, 360));
+        }
+        catch (const std::exception& e)
+        {
+            spdlog::error("Failed to initialize Camera: {}", e.what());
+            return false;
+        }
+        spdlog::trace("Camera initialized successfully.");
+        return true;
+    }
+
+    // --- Test Functions ---
+
+    void GameApp::testResourceManager()
+    {
+        resourceManager_->getTexture("assets/textures/Actors/eagle-attack.png");
+        resourceManager_->getFont("assets/fonts/VonwaonBitmap-16px.ttf", 16);
+        resourceManager_->getSound("assets/audio/button_click.wav");
+
+        resourceManager_->unloadTexture("assets/textures/Actors/eagle-attack.png");
+        resourceManager_->unloadFont("assets/fonts/VonwaonBitmap-16px.ttf", 16);
+        resourceManager_->unloadSound("assets/audio/button_click.wav");
+    }
+
+    void GameApp::testRenderer()
+    {
+        const render::Sprite sprite_world("assets/textures/Actors/frog.png");
+        const render::Sprite sprite_ui("assets/textures/UI/buttons/Start1.png");
+        const render::Sprite sprite_parallax("assets/textures/Layers/back.png");
+
+        static float rotation = 0.0f;
+        rotation += 0.1f;
+
+        // Note the rendering order
+        renderer_->drawParallax(*camera_, sprite_parallax, glm::vec2(100, 100), glm::vec2(0.5f, 0.5f), glm::bvec2(true, false));
+        renderer_->drawSprite(*camera_, sprite_world, glm::vec2(200, 200), glm::vec2(1.0f, 1.0f), rotation);
+        renderer_->drawUISprite(sprite_ui, glm::vec2(100, 100));
+    }
+
+    void GameApp::testCamera()
+    {
+        const auto key_state = SDL_GetKeyboardState(nullptr);
+        if (key_state[SDL_SCANCODE_UP]) camera_->move(glm::vec2(0, -1));
+        if (key_state[SDL_SCANCODE_DOWN]) camera_->move(glm::vec2(0, 1));
+        if (key_state[SDL_SCANCODE_LEFT]) camera_->move(glm::vec2(-1, 0));
+        if (key_state[SDL_SCANCODE_RIGHT]) camera_->move(glm::vec2(1, 0));
+    }
+
 }  // namespace engine::core

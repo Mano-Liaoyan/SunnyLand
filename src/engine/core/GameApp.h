@@ -9,6 +9,17 @@
 struct SDL_Window;
 struct SDL_Renderer;
 
+namespace engine::resource
+{
+    class ResourceManager;
+}
+
+namespace engine::render
+{
+    class Renderer;
+    class Camera;
+}  // namespace engine::render
+
 namespace engine::core
 {
     /**
@@ -19,16 +30,17 @@ namespace engine::core
     {
       private:
         SDL_Window* window_ = nullptr;
-        SDL_Renderer* renderer_ = nullptr;
+        SDL_Renderer* sdl_renderer_ = nullptr;
         bool isRunning_ = false;
 
         // Engine components
         std::unique_ptr<Time> time_;
-        std::unique_ptr<resource::ResourceManager> resource_manager_;
+        std::unique_ptr<resource::ResourceManager> resourceManager_;
+        std::unique_ptr<render::Renderer> renderer_;
+        std::unique_ptr<render::Camera> camera_;
 
       public:
         GameApp();
-
         ~GameApp();
 
         /***
@@ -57,12 +69,20 @@ namespace engine::core
 
         void close();
 
-        bool initSDL();
+        [[nodiscard]] bool initSDL();
 
-        bool initTime();
+        [[nodiscard]] bool initTime();
 
-        bool initResourceManager();
+        [[nodiscard]] bool initResourceManager();
 
-        void testReourceManager();
+        [[nodiscard]] bool initRenderer();
+
+        [[nodiscard]] bool initCamera();
+
+        void testResourceManager();
+
+        void testRenderer();
+
+        void testCamera();
     };
 }  // namespace engine::core

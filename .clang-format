@@ -1,4 +1,5 @@
 ---
+Language: Cpp
 BasedOnStyle: Google
 IndentWidth: 4
 AccessModifierOffset: -2
@@ -9,14 +10,11 @@ SortIncludes: CaseInsensitive
 IncludeBlocks: Regroup
 # This identifies the "main" header
 IncludeIsMainRegex: '([-_](test|unittest))?$'
-
 IncludeCategories:
-  # 1. System headers (highest priority/top of list)
-  - Regex: '^<.*>'
+  - Regex: '^<.*'
     Priority: 1
-  # 2. Project headers
-  - Regex: '^".*"'
+  - Regex: '^".*'
     Priority: 2
-  # 3. Everything else
   - Regex: '.*'
     Priority: 3
+...
