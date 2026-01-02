@@ -1,5 +1,6 @@
 # CMake cache
 cmake-build/
+cmake-build-release/
 build/
 
 # Generated compile database (useful for LSP/IntelliSense)
