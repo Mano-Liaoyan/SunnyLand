@@ -1,6 +1,7 @@
 # CMake cache
 cmake-build/
 build/
+.xmake/
 
 # Generated compile database (useful for LSP/IntelliSense)
 compile_commands.json
